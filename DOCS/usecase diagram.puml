@@ -1,0 +1,149 @@
+@startuml
+' جهت چیدمان
+left to right direction
+
+skinparam actorStyle stickman
+skinparam usecaseBorderColor #2D3E50
+skinparam usecaseBackgroundColor #E8EFF7
+skinparam actorBorderColor #2D3E50
+
+' ------------------------
+' LEFT and RIGHT GROUPS (outside system)
+' ------------------------
+
+  actor "Employee" as Emp
+  actor "HR Manager" as HR
+  actor "System Administrator" as SA
+
+
+  actor "Family Member" as FM
+  actor "Facility Manager" as FMG
+  
+
+
+'=====================
+' SYSTEM BOUNDARY
+'=====================
+rectangle "Welfare Management System" as WS {
+
+  ' GENERAL FUNCTIONALITY
+  usecase "Authentication" as UC_Auth
+  usecase "Password Recovery" as UC_PassRec
+  usecase "View Notifications" as UC_Notif
+  usecase "Validate User" as UC_ValidateUser
+  usecase "Check Capacity" as UC_CheckCapacity
+  usecase "View Services" as UC_ViewServices
+
+  ' REPORTING
+  usecase "Reporting" as UC_Report
+  usecase "Personal Report" as UC_PersonalReport
+  usecase "HR Reports" as UC_HRRep
+  usecase "System Reports" as UC_SysRep
+  usecase "Facility Reports" as UC_FacRep
+
+  UC_PersonalReport -|> UC_Report
+  UC_HRRep -|> UC_Report
+  UC_SysRep -|> UC_Report
+  UC_FacRep -|> UC_Report
+
+  ' SHARED USER USE CASES
+  usecase "Login" as UC_Login
+  usecase "View Dashboard" as UC_ViewDash
+  usecase "Manage Profile" as UC_ManageProf
+  usecase "Reserve Service" as UC_Reserve
+  usecase "Cancel Reservation" as UC_Cancel
+  usecase "Check-in" as UC_Checkin
+  usecase "View Reservation History" as UC_History
+  usecase "Check Quota" as UC_CheckQuota
+
+  ' FACILITY MANAGER - باید قبل از استفاده تعریف شود
+  usecase "Manage Facility Capacity" as UC_FacManageCapacity
+  usecase "Verify Attendance" as UC_VerifyAttendance
+  usecase "Manage Sessions" as UC_ManageSessions
+  usecase "View Visitors List" as UC_ViewVisitors
+  usecase "Manage Service Inventory" as UC_Inventory
+
+  ' HR MANAGER
+  usecase "Manage Employees" as UC_ManageEmp
+  usecase "Manage Quotas" as UC_ManageQuota
+  usecase "Configure Organizational Access" as UC_OrgAccess
+  usecase "Monitor Service Usage" as UC_Monitor
+
+  ' SYSTEM ADMIN
+  usecase "Manage Companies" as UC_ManageComp
+  usecase "System Configuration" as UC_SysConfig
+  usecase "Multi-Company Setup" as UC_MultiComp
+  usecase "System Access Management" as UC_SysAccess
+  usecase "Send System Notifications" as UC_SendNotif
+  usecase "Manage System Capacity" as UC_SysCapacity
+
+  ' RELATIONSHIPS
+  UC_Reserve --> UC_CheckQuota : <<include>>
+  UC_Reserve --> UC_CheckCapacity : <<include>>
+  UC_Checkin --> UC_ValidateUser : <<include>>
+  UC_Login .> UC_Auth : <<include>>
+  
+  UC_MultiComp --> UC_SysConfig : <<include>>
+  UC_SysCapacity -|> UC_FacManageCapacity
+
+  UC_ViewVisitors --> UC_ManageSessions : <<include>>
+  UC_Checkin <.. UC_VerifyAttendance : <<extend>>
+}
+
+'=====================
+' ACTOR CONNECTIONS
+'=====================
+
+' LEFT side actors
+Emp --> UC_Login
+Emp --> UC_ViewDash
+Emp --> UC_ManageProf
+Emp --> UC_Reserve
+Emp --> UC_Cancel
+Emp --> UC_Checkin
+Emp --> UC_History
+Emp --> UC_ViewServices
+Emp --> UC_PersonalReport
+Emp --> UC_Auth
+Emp --> UC_PassRec
+Emp --> UC_Notif
+
+HR --> UC_ManageEmp
+HR --> UC_ManageQuota
+HR --> UC_OrgAccess
+HR --> UC_Monitor
+HR --> UC_HRRep
+HR --> UC_Auth
+
+SA --> UC_ManageComp
+SA --> UC_SysConfig
+SA --> UC_MultiComp
+SA --> UC_SysAccess
+SA --> UC_SendNotif
+SA --> UC_SysCapacity
+SA --> UC_SysRep
+SA --> UC_Auth
+
+' RIGHT side actors
+FM --> UC_Login
+FM --> UC_ViewDash
+FM --> UC_ManageProf
+FM --> UC_Reserve
+FM --> UC_Cancel
+FM --> UC_Checkin
+FM --> UC_History
+FM --> UC_ViewServices
+FM --> UC_PersonalReport
+FM --> UC_Auth
+FM --> UC_PassRec
+FM --> UC_Notif
+
+FMG --> UC_VerifyAttendance
+FMG --> UC_ManageSessions
+FMG --> UC_ViewVisitors
+FMG --> UC_FacManageCapacity
+FMG --> UC_Inventory
+FMG --> UC_FacRep
+FMG --> UC_Auth
+
+@enduml
